@@ -1,4 +1,4 @@
-FROM ngnix
+FROM nginx
 LABEL "Project"="vprofile"
 LABEL "Author"="Michael"
 

@@ -1,0 +1,33 @@
+---
+- name: Update web servers
+  hosts: webserver
+  become: yes
+
+  tasks:
+  - name: Ensure apache is at the latest version
+    ansible.builtin.apt:
+      name: apache2
+      state: latest
+
+  - name: start and enable apache2
+    ansible.builtin.service:
+      name: apache2
+      state: started
+      enabled: yes
+
+- name: Update database servers
+  hosts: dbserver
+  become: yes
+
+  tasks:
+  - name: Ensure mysql-server is at the latest version
+    ansible.builtin.apt:
+      name: mysql-server
+      state: present
+
+  - name: start and enable mysql
+    ansible.builtin.service:
+      name: mysql
+      state: started
+      enabled: yes 
+

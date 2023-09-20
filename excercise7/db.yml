@@ -1,0 +1,48 @@
+---
+- name: Update database servers
+  hosts: dbserver
+  become: yes
+    #vars:
+    #user: dbuser123
+    #dbname: dbadmin
+    #password: dbadmin
+  
+  tasks: 
+  - debug:
+      var: user
+  - debug: 
+      msg: "This is a debug message for {{password}}"
+
+
+  - name: Ensure mysql-server is at the latest version
+    ansible.builtin.apt:
+      name: mysql-server
+      state: present
+
+  - name: start and enable mysql
+    ansible.builtin.service:
+      name: mysql
+      state: started
+      enabled: yes
+
+  - name: install python mysql
+    ansible.builtin.apt:
+      name: python3-mysqldb
+      state: present
+    register: dbout
+
+  - name: Create a new database with name 'dbadmin'
+    mysql_db:
+      name: "{{dbname}}" 
+      state: present
+
+  - name: Create a new database user with name 'dbuser'
+    mysql_user:
+      name: "{{user}}"
+      password: "{{password}}"
+      priv: '*.*:ALL'
+      state: present
+
+  - name: Display registered variable
+    debug: 
+      var: dbout

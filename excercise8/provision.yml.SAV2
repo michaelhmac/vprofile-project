@@ -1,0 +1,73 @@
+---
+- name: Provisioning Server
+  hosts: all
+  become: yes
+  vars:
+    serv: ansbile_distribution 
+  tasks:
+
+    - name: Install ntp on ubuntu
+      apt:
+        name: "{{ item }}"
+        state: present
+      when: serv == "Ubuntu"
+      loop:
+        - ntp
+        - git
+        - zip
+        - unzip
+        - apache2
+
+    - name: Copy the index.html file
+      copy:
+        src: ./index.html
+        dest: /var/www/html/index.html
+      notify: Restart Apache
+      when: "'webserver' in group_names"
+
+    - name: Install ntp on RedHat
+      yum:
+        name: "{{ item }}"
+        state: present
+      when: serv == "RedHat"
+      loop:
+        - chrony
+        - git
+        - zip
+        - unzip
+        - httpd
+
+    - name: Start and Enable ntp on Ubuntu
+      service:
+        name: ntp
+        state: started
+        enabled: yes
+      when: serv == "Ubuntu"
+
+    - name: Start and Enable ntp on RedHat
+      service:
+        name: chronyd
+        state: started
+        enabled: yes
+      when: serv == "RedHat"
+
+    - name: Restart Apache
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Restart Apache
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+      when: ansible_distribution == "RedHat"
+
+#    handlers:
+#   - name: Restart Apache
+#      service:
+#        name: apache2
+#        state: restarted
+#        enabled: yes

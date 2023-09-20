@@ -1,0 +1,6 @@
+---
+- name: Provisioining Server
+  hosts: all
+  become: yes
+  roles:
+    - post-install 

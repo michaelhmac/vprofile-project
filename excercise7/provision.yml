@@ -1,0 +1,44 @@
+---
+- name: Provisioning Server
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install ntp on ubuntu
+      apt:
+        name: "{{ item }}"
+        state: present
+      when: ansible_distribution == "Ubuntu"
+      loop:
+         - ntp
+         - git
+         - zip
+         - unzip
+         - apache2
+
+    - name: Install ntp on RedHat
+      yum:
+        name: "{{ item }}"
+        state: present
+      when: ansible_distribution == "RedHat"
+      loop: 
+        - chrony
+        - git
+        - zip
+        - unzip
+        - httpd
+
+    - name: Start and Enable ntp on Ubuntu
+      service:
+        name: ntp
+        state: started
+        enabled: yes
+      when: ansible_distribution == "Ubuntu"
+
+
+    - name: Start and Enable ntp on RedHat
+      service:
+        name: chronyd
+        state: started
+        enabled: yes
+      when: ansible_distribution == "RedHat"
+

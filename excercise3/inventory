@@ -1,0 +1,36 @@
+all: 
+  hosts:
+    web01:
+      ansible_host: 172.31.39.239
+#      ansible_user: ubuntu
+#      ansible_ssh_private_key_file: web00-key.pem
+
+    web02:
+      ansible_host: 172.31.38.94
+#      ansible_user: ubuntu
+#      ansible_ssh_private_key_file: web00-key.pem
+
+    db01:
+      ansible_host: 172.31.37.29
+#      ansible_user: ubuntu
+#      ansible_ssh_private_key_file: web00-key.pem
+
+webserver:
+  hosts:
+    web01:
+    web02:
+dbserver:
+  hosts:
+    db01:
+
+california:
+  children: 
+    webserver:
+    dbserver: 
+  vars:
+    ansible_user: ubuntu
+    ansible_ssh_private_key_file: web00-key.pem
+
+
+
+
